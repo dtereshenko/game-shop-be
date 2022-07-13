@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getProductById handler should return response 200 with the requested product 1`] = `"{\\"product\\":{\\"title\\":\\"Street Fighters III\\",\\"price\\":15,\\"description\\":\\"Fighting\\"}}"`;
+
+exports[`getProductById handler should return response 404 with "Product not found" message 1`] = `"{\\"message\\":\\"Product not found\\"}"`;
