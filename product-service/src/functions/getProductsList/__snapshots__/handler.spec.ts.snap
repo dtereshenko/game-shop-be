@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getProductList handler should return response 200 with list of the products 1`] = `"{\\"products\\":[{\\"title\\":\\"Street Fighters III\\",\\"price\\":15,\\"description\\":\\"Fighting\\"},{\\"title\\":\\"Atlantis\\",\\"price\\":25,\\"description\\":\\"Adventure & movie playground\\"}]}"`;
+
+exports[`getProductList handler should return response 500 with error message 1`] = `"{\\"message\\":\\"Internal Server Error\\"}"`;
