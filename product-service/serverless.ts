@@ -16,9 +16,13 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      PG_USER: "postgres",
+      PG_HOST: "product-service.c6dsfu9l1eca.eu-west-1.rds.amazonaws.com",
+      PG_PASSWORD: "password here",
+      PG_DATABASE: "products",
+      PG_PORT: "5432",
     },
   },
-  // import the function via paths
   functions: { getProductsList, getProductById },
   package: { individually: true },
   custom: {
@@ -26,7 +30,7 @@ const serverlessConfiguration: AWS = {
       bundle: true,
       minify: false,
       sourcemap: true,
-      exclude: ["aws-sdk"],
+      exclude: ["aws-sdk", "pg-native"],
       target: "node16",
       define: { "require.resolve": undefined },
       platform: "node",
