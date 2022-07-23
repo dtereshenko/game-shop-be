@@ -12,6 +12,7 @@ export const getProductsList: ValidatedEventAPIGatewayProxyEvent = async () => {
       response: { products: games },
     });
   } catch (e) {
+    console.error("error message:", e.message);
     return formatJSONResponse({ status: 500, response: { message: e } });
   }
 };
