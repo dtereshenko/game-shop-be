@@ -18,6 +18,8 @@ class ProductRepo {
   private client: any;
 
   async initClient() {
+    if (this.client) return;
+
     this.client = new Client(dbOption);
     await this.client.connect();
   }
