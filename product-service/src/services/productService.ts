@@ -1,25 +1,37 @@
-import got from "got";
-import { GAMES_RESOURCE_URL } from "@config/api";
 import { Product } from "../types/Product";
+import productRepo from "@services/productRepo";
 
 class ProductService {
   async getAll(): Promise<Product[]> | never {
     try {
-      return await got(GAMES_RESOURCE_URL).json();
+      const games = await productRepo.find();
+      console.log("products", games);
+
+      return games;
     } catch (e) {
       console.log("Error while retrieving products");
-      console.log(e?.response?.body);
-      throw e?.response?.body;
+      console.log(e.message);
+
+      throw e;
     }
   }
 
-  async findById(id: string): Promise<Product> | never {
+  async findById(uuid: string): Promise<Product> | never {
     try {
-      return await got(`${GAMES_RESOURCE_URL}/${id}`).json();
+      return productRepo.findOneBy(uuid);
     } catch (e) {
-      console.log("Error while retrieving product by id ", id);
-      console.log(e?.response?.body);
-      throw e?.response?.body;
+      console.log("Error while retrieving product by id ", uuid);
+      throw e;
+    }
+  }
+
+  async create(product): Promise<boolean> | never {
+    try {
+      const status = await productRepo.create(product);
+      return status;
+    } catch (e) {
+      console.log("Error while creating new product", product);
+      throw e;
     }
   }
 }
