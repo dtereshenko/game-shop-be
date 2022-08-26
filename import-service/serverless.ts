@@ -23,6 +23,8 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      AWS_ACCOUNT_ID: { Ref: "AWS::AccountId" },
+      IMPORT_QUEUE_NAME: "${ssm:/product-imported-queue-name}",
     },
     iamRoleStatements: [
       {
@@ -34,6 +36,21 @@ const serverlessConfiguration: AWS = {
         Effect: "Allow",
         Action: ["s3:*"],
         Resource: ["arn:aws:s3:::product-docs-csv/*"],
+      },
+      {
+        Effect: "Allow",
+        Action: ["sqs:SendMessage", "sqs:GetQueueUrl"],
+        Resource: {
+          "Fn::Join": [
+            ":",
+            [
+              "arn:aws:sqs",
+              { Ref: "AWS::Region" },
+              { Ref: "AWS::AccountId" },
+              "${self:provider.environment.IMPORT_QUEUE_NAME}",
+            ],
+          ],
+        },
       },
     ],
   },
