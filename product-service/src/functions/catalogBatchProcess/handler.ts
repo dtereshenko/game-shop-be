@@ -11,6 +11,7 @@ export const catalogBatchProcess: SQSHandler = async (event) => {
     for (const productUploadEvent of event.Records) {
       const product = JSON.parse(productUploadEvent.body);
 
+
       // Simple validation to test Dead Letter Queue
       if (product.count < 1) {
         throw new Error(
@@ -33,6 +34,7 @@ export const catalogBatchProcess: SQSHandler = async (event) => {
     }
   } catch (e) {
     console.error(e.message);
+
     throw e;
   }
 };
