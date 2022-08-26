@@ -60,6 +60,18 @@ const serverlessConfiguration: AWS = {
         Type: "AWS::SQS::Queue",
         Properties: {
           QueueName: "${self:custom.IMPORT_QUEUE_NAME}",
+          RedrivePolicy: {
+            deadLetterTargetArn: {
+              "Fn:GetAtt": ["CatalogItemsDeadLetterQueue", "Arn"],
+            },
+            maxReceiveCount: 5,
+          },
+        },
+      },
+      CatalogItemsDeadLetterQueue: {
+        Type: "AWS::SQS::Queue",
+        Properties: {
+          QueueName: "catalog-items-dead-letter-queue",
         },
       },
       CreateProductTopic: {
