@@ -1,6 +1,6 @@
 import { S3 } from "aws-sdk";
 import { BUCKET_NAME, UPLOADED_FOLDER_NAME } from "@libs/config";
-import { getS3Client } from "@libs/s3client";
+import { getS3Client } from "../providers/s3client";
 
 const getBucketParams = (fileName) => ({
   Bucket: BUCKET_NAME,

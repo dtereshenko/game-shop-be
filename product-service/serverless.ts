@@ -1,5 +1,10 @@
 import type { AWS } from "@serverless/typescript";
-import { getProductsList, getProductById, createProduct } from "@functions";
+import {
+  getProductsList,
+  getProductById,
+  createProduct,
+  catalogBatchProcess,
+} from "@functions";
 
 const serverlessConfiguration: AWS = {
   service: "product-service",
@@ -15,6 +20,24 @@ const serverlessConfiguration: AWS = {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
     },
+    iamRoleStatements: [
+      {
+        Effect: "Allow",
+        Action: [
+          "ssm:GetParameter",
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath",
+        ],
+        Resource: "*",
+      },
+      {
+        Effect: "Allow",
+        Action: ["sns:Publish"],
+        Resource: {
+          Ref: "CreateProductTopic",
+        },
+      },
+    ],
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
@@ -25,9 +48,38 @@ const serverlessConfiguration: AWS = {
       PG_PORT: "${env:PG_PORT}",
     },
   },
-  functions: { getProductsList, getProductById, createProduct },
+  functions: {
+    getProductsList,
+    getProductById,
+    createProduct,
+    catalogBatchProcess,
+  },
+  resources: {
+    Resources: {
+      CatalogItemsQueue: {
+        Type: "AWS::SQS::Queue",
+        Properties: {
+          QueueName: "${self:custom.IMPORT_QUEUE_NAME}",
+        },
+      },
+      CreateProductTopic: {
+        Type: "AWS::SNS::Topic",
+        Properties: {
+          TopicName: "${self:custom.CREATE_PRODUCT_SNS_TOPIC}",
+          Subscription: [
+            {
+              Endpoint: "di.tereshenko@gmail.com",
+              Protocol: "email",
+            },
+          ],
+        },
+      },
+    },
+  },
   package: { individually: true },
   custom: {
+    IMPORT_QUEUE_NAME: "${ssm:/product-imported-queue-name}",
+    CREATE_PRODUCT_SNS_TOPIC: "createProductTopic",
     esbuild: {
       bundle: true,
       minify: false,
